@@ -63,22 +63,19 @@ jobs:
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
-    - name: Step 1 - Create a temporary artifact downloads folder
+    - name: Create a temporary artifact downloads folder
       run: mkdir downloads
 
-    - name: step 2 - Add artifacts to publish to the temp folder
+    - name: Add artifacts to publish to the temp folder
       run: |
-        cd downloads
-        echo 'alpha'    > alpha.html
-        echo 'bravo'    > bravo.html
-        echo 'charlie'  > charlie.html
-        cd ..
+        mv ${{ steps.strings.outputs.build-output-dir }} ./downloads
 
-    - name: Step 3 - Use the Upload Artifact GitHub Action
-      uses: actions/upload-artifact@v2
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
       with:
         name: assets-for-download
         path: downloads
+        retention-days: 5
 
     # - name: Test
     #   working-directory: ${{ steps.strings.outputs.build-output-dir }}
